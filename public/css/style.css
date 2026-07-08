@@ -1,0 +1,24 @@
+.container-rhombus {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.rhombus {
+    width: 150px;
+    height: 150px;
+    transform: rotate(45deg);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.text-rhombus {
+    color: white;
+    font-weight: bold;
+    transform: rotate(-45deg);
+    justify-content: center;
+    text-align: center;
+    font-size: 18px;
+     }
