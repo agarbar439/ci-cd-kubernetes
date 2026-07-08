@@ -4,7 +4,7 @@ BASE_URL="http://localhost:8080"
 
 echo "=== Test 1: Health Check ==="
 
-HEALTH=$(curl -s "$BASE_URL/api/health.php")
+HEALTH=$(curl -s "$BASE_URL/health.php")
 
 if [[ "$HEALTH" == *"ok"* ]]; then
     echo "✅ Health OK"
@@ -18,7 +18,7 @@ echo "=== Test 2: Save Color ==="
 
 SAVE_RESPONSE=$(curl -s \
     -X POST \
-    "$BASE_URL/api/saveColor.php" \
+    "$BASE_URL/saveColor.php" \
     -H "Content-Type: application/json" \
     -d '{"color":"red"}')
 
@@ -33,7 +33,7 @@ fi
 echo ""
 echo "=== Test 3: Get Color ==="
 
-GET_RESPONSE=$(curl -s "$BASE_URL/api/getColor.php")
+GET_RESPONSE=$(curl -s "$BASE_URL/getColor.php")
 
 if [[ "$GET_RESPONSE" == *"red"* ]]; then
     echo "✅ Get Color OK"
