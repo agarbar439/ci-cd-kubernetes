@@ -13,7 +13,6 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-  # build de la imagen, security scan, y push
 jobs:
   build: 
       runs-on: ubuntu-latest
@@ -37,3 +36,40 @@ jobs:
             context: .
             push: true
             tags: ${{ secrets.DOCKERHUB_USERNAME }}/rhombus-color:latest
+    
+  deploy:
+    needs: build
+    runs-on: self-hosted
+    environment:
+      name: dev-rhombus
+      url: http://localhost:30007
+    steps:
+        - name: Checkout
+          uses: actions/checkout@v4
+        - name: Ver info del runner
+          run: |
+              echo "🏃‍♂️ Ejecutándose en runner ARC"
+              echo "Hostname: $(hostname)"
+              echo "Usuario: $(whoami)"
+              kubectl version --client
+        - name: Verificar cluster
+          run: |
+              echo "🔍 Verificando conexión a Kubernetes..."
+              kubectl get nodes
+              kubectl get namespaces
+        - name: Aplicar manifiestos
+          run: |
+            echo "🚀 Desplegando aplicación..."
+            kubectl apply -f kubernetes/dev-rhombus.yaml
+            kubectl apply -f kubernetes/prod-rhombus.yaml
+            kubectl apply -f kubernetes/secret.yaml
+            kubectl apply -f kubernetes/mysql-pv.yaml
+            kubectl apply -f kubernetes/mysql-deployment.yaml
+            kubectl apply -f kubernetes/app-deployment.yaml
+
+        - name: Verificar despliegue
+          run: |
+            kubectl get pods -n dev-rhombus
+            kubectl get services -n dev-rhombus
+       
+      
